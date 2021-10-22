@@ -1,0 +1,57 @@
+name: Build and sync generated files
+on:
+  push:
+    paths:
+      - apiSpec/spec.yaml
+jobs:
+  build-doc:
+    name: Build Go
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Java
+        uses: actions/setup-java@v2
+      - name: install openapi generator
+        run:  wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/5.2.1/openapi-generator-cli-5.2.1.jar -O ~/openapi-generator-cli.jar
+      - name: Build ducment
+        run:  |
+          mkdir dist
+          java -jar ~/openapi-generator-cli.jar generate -i ./apiSpec/spec.yaml -g markdown -o dist
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: gen-doc
+          path: ./dist/
+          retention-days: 1
+  sync-doc:
+    name: Build Docs
+    runs-on: ubuntu-20.04
+    needs: build-doc
+    steps:
+      - name: Checkout stub repo
+        uses: actions/checkout@v2
+        with:
+          repository: ":KMConner-test/openapi-gen-test.wiki"
+          token: ${{ secrets.GH_PAT }}
+      - name: Remove previous files
+        run: rm -rf ./*
+      - name: download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: gen-doc
+      - name: 'Sync'
+        run: |
+          git config --global user.email "bot@example.com"
+          git config --global user.name "bot"
+          git add ./
+          git commit --allow-empty -m "Sync to proto commit [skip ci]" -m "${{ github.repository }}@${{ github.sha }}"
+          git push origin "${GITHUB_REF##*/}"
+      - name: Commit codes
+        run: |
+          git config --global user.email "bot@example.com"
+          git config --global user.name "bot"
+          git add ./
+          git commit --allow-empty -m "Sync to spec commit" -m "${{ github.repository }}@${{ github.sha }}"
+      - name: Push codes
+        run: |
+          git push origin master
