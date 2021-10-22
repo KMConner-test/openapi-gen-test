@@ -42,13 +42,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: gen-doc
-      - name: 'Sync'
-        run: |
-          git config --global user.email "bot@example.com"
-          git config --global user.name "bot"
-          git add ./
-          git commit --allow-empty -m "Sync to proto commit [skip ci]" -m "${{ github.repository }}@${{ github.sha }}"
-          git push origin "${GITHUB_REF##*/}"
       - name: Commit codes
         run: |
           git config --global user.email "bot@example.com"
