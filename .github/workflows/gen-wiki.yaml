@@ -27,14 +27,14 @@ jobs:
           path: ./dist/
           retention-days: 1
   sync-doc:
-    name: Build Docs
+    name: Sync Docs
     runs-on: ubuntu-20.04
     needs: build-doc
     steps:
       - name: Checkout stub repo
         uses: actions/checkout@v2
         with:
-          repository: ":KMConner-test/openapi-gen-test.wiki"
+          repository: "KMConner-test/openapi-gen-test.wiki"
           token: ${{ secrets.GH_PAT }}
       - name: Remove previous files
         run: rm -rf ./*
