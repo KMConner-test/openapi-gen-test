@@ -1,0 +1,40 @@
+openapi: "3.0.0"
+info:
+  description: "this is test for open api"
+  version: "0.1.0"
+  title: "openapi-gen-test"
+paths:
+ '/customers/{customer_id}':
+    get:
+      summary: customer
+      tags: []
+      parameters:
+      - schema:
+          type: integer
+        name: customer_id
+        in: path
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                customer_id: 234
+                customer_name: name
+      operationId: get-customers-customer_id
+      description: Retrieve a specific customer by ID
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+        customer_name:
+          type: string
+      example:
+        customer_id: 123
+        customer_name: 'hogehoge'
