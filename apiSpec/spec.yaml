@@ -1,4 +1,6 @@
 openapi: "3.0.0"
+servers:
+  - url: http://localhost:8080/
 info:
   description: "this is test for open api"
   version: "0.1.0"
@@ -7,7 +9,7 @@ paths:
  '/customers/{customer_id}':
     get:
       summary: customer
-      tags: []
+      tags: ["customer"]
       parameters:
       - schema:
           type: integer
@@ -30,6 +32,9 @@ components:
   schemas:
     User:
       type: object
+      required:
+        - customer_id
+        - customer_name
       properties:
         customer_id:
           type: integer
