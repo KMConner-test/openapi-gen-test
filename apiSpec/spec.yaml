@@ -42,4 +42,4 @@ components:
           type: string
       example:
         customer_id: 123
-        customer_name: 'hogehoge'
+        customer_name: 'name'
